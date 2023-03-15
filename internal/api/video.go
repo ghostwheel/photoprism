@@ -72,7 +72,13 @@ func GetVideo(router *gin.RouterGroup) {
 
 		// File bitrate too high (for streaming)?
 		conf := get.Config()
-		transcode := !supported || conf.FFmpegEnabled() && conf.FFmpegBitrateExceeded(fileBitrate)
+		dontTranscode0 := conf.DontTranscode0()
+		if( dontTranscode0 ) {
+			log.Debugf("Got dont transcode 0")
+		} else {
+			log.Debugf("No dont transcode 0")
+		}
+		transcode := (!supported || conf.FFmpegEnabled() && conf.FFmpegBitrateExceeded(fileBitrate)) && !dontTranscode0
 
 		if mf, err := photoprism.NewMediaFile(fileName); err != nil {
 			// Set missing flag so that the file doesn't show up in search results anymore.
@@ -101,10 +107,16 @@ func GetVideo(router *gin.RouterGroup) {
 
 			AddContentTypeHeader(c, ContentTypeAvc)
 		} else {
-			if f.FileCodec != "" && f.FileCodec != f.FileType {
+			if f.FileCodec != "" && f.FileCodec != f.FileType && !dontTranscode0 {
+				if( dontTranscode0 ) {
+					log.Debugf("I'm here even though dont is set")
+				}				
 				log.Debugf("video: %s is %s compressed and requires no transcoding, average bitrate %.1f MBit/s", clean.Log(f.FileName), clean.Log(strings.ToUpper(f.FileCodec)), fileBitrate)
 				AddContentTypeHeader(c, fmt.Sprintf("%s; codecs=\"%s\"", f.FileMime, clean.Codec(f.FileCodec)))
 			} else {
+				if( dontTranscode0 ) {
+					log.Debugf("Good, I'm gere and dont transcode is set")
+				}				
 				log.Debugf("video: %s is streamed directly, average bitrate %.1f MBit/s", clean.Log(f.FileName), fileBitrate)
 				AddContentTypeHeader(c, f.FileMime)
 			}

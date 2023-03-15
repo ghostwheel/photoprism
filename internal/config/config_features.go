@@ -84,6 +84,11 @@ func (c *Config) DisableFFmpeg() bool {
 	return c.options.DisableFFmpeg
 }
 
+func (c *Config) DontTranscode0() bool {
+	//	return c.options.DontTranscode0
+	return true
+}
+
 // DisableDarktable checks if conversion of RAW images with Darktable is disabled.
 func (c *Config) DisableDarktable() bool {
 	if c.DisableRaw() || c.options.DisableDarktable {

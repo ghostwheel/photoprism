@@ -255,6 +255,11 @@ var Flags = CliFlags{
 			EnvVar: "PHOTOPRISM_DISABLE_FFMPEG",
 		}}, {
 		Flag: cli.BoolFlag{
+			Name:   "dont-transcode-0",
+			Usage:  "Do not transcode videos with bitrate 0",
+			EnvVar: "PHOTOPRISM_DISABLE_TRANSCODE0",
+		}}, {
+		Flag: cli.BoolFlag{
 			Name:   "disable-exiftool",
 			Usage:  "disable creating JSON metadata sidecar files with ExifTool",
 			EnvVar: "PHOTOPRISM_DISABLE_EXIFTOOL",
